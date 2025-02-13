@@ -30,4 +30,4 @@ definition:
           type: ip
           status: active
           limit: 0
-  returns: ${{ steps.make_request.result }}
+  returns: ${{ steps.make_request.result.data }}
