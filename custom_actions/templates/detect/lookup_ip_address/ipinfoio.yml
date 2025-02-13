@@ -6,7 +6,6 @@ definition:
   description: Get IPinfo.io report for an IP address
   display_group: IPinfo.io
   doc_url: https://ipinfo.io/developers
-  author: landon.chelf@fisglobal.com  
   secrets:
     - name: ipinfoio
       keys:

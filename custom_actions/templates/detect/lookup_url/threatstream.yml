@@ -1,9 +1,9 @@
 type: action
 definition:
-  name: lookup_ip_address
+  name: lookup_url
   namespace: tools.threatstream
-  title: Lookup IP address
-  description: Get Anomali ThreatStream report for an IP address
+  title: Lookup URL
+  description: Search Anomali ThreatStream for a URL
   display_group: Anomali ThreatStream
   doc_url: https://TODO
   secrets:
@@ -12,9 +12,9 @@ definition:
         - USERNAME
         - API_KEY
   expects:
-    ip_address:
+    url:
       type: str
-      description: The IP address to lookup
+      description: The URL to lookup
   steps:
     - ref: make_request
       action: core.http_request
@@ -25,8 +25,8 @@ definition:
           Accept: application/json
           Authorization: apikey ${{ SECRETS.threatstream.USERNAME}}:${{ SECRETS.threatstream.API_KEY }}
         params:
-          value: ${{ inputs.ip_address }}
-          type: ip
+          value: ${{ inputs.url }}
+          type: url
           status: active
           limit: 0
   returns: ${{ steps.make_request.result.data }}

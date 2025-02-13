@@ -1,20 +1,20 @@
 type: action
 definition:
-  name: lookup_ip_address
+  name: lookup_file_hash
   namespace: tools.threatstream
-  title: Lookup IP address
-  description: Get Anomali ThreatStream report for an IP address
+  title: Lookup File Hash
+  description: Search Anomali ThreatStream for a file hash
   display_group: Anomali ThreatStream
-  doc_url: https://TODO
+  doc_url: https://TODO 
   secrets:
     - name: threatstream
       keys:
         - USERNAME
         - API_KEY
   expects:
-    ip_address:
+    file_hash:
       type: str
-      description: The IP address to lookup
+      description: File hash to lookup
   steps:
     - ref: make_request
       action: core.http_request
@@ -25,8 +25,8 @@ definition:
           Accept: application/json
           Authorization: apikey ${{ SECRETS.threatstream.USERNAME}}:${{ SECRETS.threatstream.API_KEY }}
         params:
-          value: ${{ inputs.ip_address }}
-          type: ip
+          value: ${{ inputs.file_hash }}
+          type: md5
           status: active
           limit: 0
   returns: ${{ steps.make_request.result.data }}
