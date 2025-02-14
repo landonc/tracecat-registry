@@ -14,7 +14,7 @@ registry_secret = RegistrySecret(name="threatstream", keys=["USERNAME","API_KEY"
     namespace="tools.threatstreampy",
     secrets=[registry_secret]
 )
-def lookup_file_hash(file_hash: Annotated[str, Field(description="The file hash to check")]):
+async def lookup_file_hash(file_hash: Annotated[str, Field(description="The file hash to check")]):
     try:        
         params = {
             "value": file_hash,
@@ -22,7 +22,8 @@ def lookup_file_hash(file_hash: Annotated[str, Field(description="The file hash 
             "status": "active",
             "limit": 0
         }
-        return indicator_lookup(secrets=secrets, params=params)        
+        response = await indicator_lookup(secrets=secrets, params=params)
+        return response    
     except Exception as ex:
         raise Exception(f"Error retriving results: {ex}")
 
