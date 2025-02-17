@@ -5,6 +5,7 @@ from pydantic import Field
 from tracecat_registry import RegistrySecret, registry, secrets
 import httpx
 from akamai.edgegrid import EdgeGridAuth
+import json
 # from urllib.parse import urljoin
 
 ALLOWED_METHODS = ["GET", "POST", "PATCH", "DELETE", "PUT", "HEAD"]
@@ -68,17 +69,18 @@ async def call_endpoint(
             access_token=secrets.get("AKAMAI_ACCESS_TOKEN")
         )
         client.base_url = secrets.get("AKAMAI_BASE_URL")
-        request = client.build_request(
+        req = client.build_request(
             method=method,
             url=endpoint,
             headers={
                 "Content-Type": "application/json",
-                "Accept":  "applicaiton/json"
+                "Accept":  "application/json"
             },
             params=params,
             data=data,
             timeout=timeout
         )
-        response = await client.send(request)
-
-    return response.json()
+        
+        #response = await client.send(req)
+    return json.dumps(req)
+    #return response
