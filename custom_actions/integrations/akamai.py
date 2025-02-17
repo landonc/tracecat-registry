@@ -80,7 +80,6 @@ async def call_endpoint(
             data=data,
             timeout=timeout
         )
-        
-        #response = await client.send(req)
-    return json.dumps(req)
-    #return response
+        response = await client.send(req)
+        response.raise_for_status()
+        return response.json()
