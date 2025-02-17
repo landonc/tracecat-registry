@@ -11,7 +11,8 @@ ALLOWED_METHODS = ["GET", "POST", "PATCH", "DELETE", "PUT", "HEAD"]
 
 akamai_secret = RegistrySecret(
     name="akamai",
-    keys=["AKAMAI_BASE_URL", "AKAMAI_CLIENT_TOKEN", "AKAMAI_CLIENT_SECRET", "AKAMAI_ACCESS_TOKEN"]
+    keys=["AKAMAI_BASE_URL", "AKAMAI_CLIENT_TOKEN",
+          "AKAMAI_CLIENT_SECRET", "AKAMAI_ACCESS_TOKEN"]
 )
 """Akamai EdgeGridAuth credentials
 
@@ -22,6 +23,7 @@ akamai_secret = RegistrySecret(
     - `AKAMAI_CLIENT_SECRET`
     - `AKAMAI_ACCESS_TOKEN`
 """
+
 
 @registry.register(
     default_title="Call endpoint",
@@ -36,38 +38,38 @@ async def call_endpoint(
         str,
         Field(...,
               description="HTTP request method"
-        ),
+              ),
     ],
     endpoint: Annotated[
         str,
-        Field(...,description="API endpoint")
+        Field(..., description="API endpoint")
     ],
     params: Annotated[
         dict[str, Any] | None,
-        Field(...,description="Parameters to pass with the request")
+        Field(..., description="Parameters to pass with the request")
     ],
     data: Annotated[
         dict[str, Any] | None,
-        Field(...,description="Data to pass with the request")
+        Field(..., description="Data to pass with the request")
     ],
     timeout: Annotated[
         int | None,
-        Field(...,description="Timeout for the request. Default is 60 seconds.")
+        Field(..., description="Timeout for the request. Default is 60 seconds.")
     ]
 ) -> dict[str, Any]:
     params = params or {}
     timeout = timeout or 60
-    url = urljoin(secrets.get("AKAMAI_BASE_URL"),endpoint)
+    url = urljoin(secrets.get("AKAMAI_BASE_URL"), endpoint)
     async with httpx.AsyncClient() as client:
+        client.auth = EdgeGridAuth(
+            client_token=secrets.get("AKAMAI_CLIENT_TOKEN"),
+            client_secret=secrets.get("AKAMAI_CLIENT_SECRET"),
+            access_token=secrets.get("AKAMAI_ACCESS_TOKEN")
+        )
         request = client.build_request(
-            method = method, 
-            url = url,
-            auth = EdgeGridAuth(
-                client_token = secrets.get("AKAMAI_CLIENT_TOKEN"),
-                client_secret = secrets.get("AKAMAI_CLIENT_SECRET"),
-                access_token = secrets.get("AKAMAI_ACCESS_TOKEN")
-                ),
-            headers = {
+            method=method,
+            url=url,
+            headers={
                 "Content-Type": "application/json",
                 "Accept":  "applicaiton/json"
             },
@@ -76,5 +78,5 @@ async def call_endpoint(
             timeout=timeout
         )
         response = await client.send(request)
-    
+
     return response.json()
