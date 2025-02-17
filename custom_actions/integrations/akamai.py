@@ -35,7 +35,11 @@ akamai_secret = RegistrySecret(
     namespace="tools.akamai",
     secrets=[akamai_secret],
 )
-async def call_endpoint(
+# async for httpx
+# async def call_endpoint(
+
+# non-async for requests
+def call_endpoint(
     method: Annotated[
         str,
         Field(...,
@@ -71,7 +75,7 @@ async def call_endpoint(
     )
     response = client.request(
         method=method,
-        url=endpoint,
+        url=url,
         headers={
             "Content-Type": "application/json",
             "Accept":  "application/json"
