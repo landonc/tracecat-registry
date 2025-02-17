@@ -184,7 +184,7 @@ def list_network_lists(
               ),
     ],
     list_type: Annotated[
-        str: None,
+        str | None,
         Field(..., description="Filters the output to lists of only the given type of network lists if provided, either *IP* or *GEO*. This corresponds to the network list object's type member.")
     ],
     extended: Annotated[
