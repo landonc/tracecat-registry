@@ -57,10 +57,11 @@ async def call_endpoint(
 ) -> dict[str, Any]:
     params = params or {}
     timeout = timeout or 60
+    url = urljoin(secrets.get("AKAMAI_BASE_URL"),endpoint)
     async with httpx.AsyncClient() as client:
-        request = client.request(
+        request = client.build_request(
             method = method, 
-            url = urljoin(secrets.get("AKAMAI_BASE_URL"),endpoint),
+            url = url,
             auth = EdgeGridAuth(
                 client_token = secrets.get("AKAMAI_CLIENT_TOKEN"),
                 client_secret = secrets.get("AKAMAI_CLIENT_SECRET"),
