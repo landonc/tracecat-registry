@@ -105,7 +105,7 @@ def call_endpoint(
         timeout=timeout
     )
 
-    return response.json()
+    return response
 
 # akamai.edgegrid throws errors, seems likely due to it registering a hook in the requests session at
 # https://github.com/akamai/AkamaiOPEN-edgegrid-python/blob/036f057f317445b50852b1d57d695835150dfdd1/akamai/edgegrid/edgegrid.py#L199C9-L199C58
