@@ -33,7 +33,7 @@ def akamai_request(
     url: str,
     params: dict[str, Any] | None,
     data: dict[str, Any] | None,
-    timeout: int | None
+    timeout: int | None,
 ) -> dict[str, Any]:
     params = params or {}
     timeout = timeout or 60
@@ -212,5 +212,7 @@ def list_network_lists(
         ),
         method="GET",
         url=url,
-        params=params
+        params=params,
+        data=None,
+        timeout=None
     )
