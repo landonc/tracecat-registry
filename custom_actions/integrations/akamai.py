@@ -9,6 +9,8 @@ from akamai.edgegrid import EdgeGridAuth
 import requests
 from urllib.parse import urljoin
 
+from tracecat.logger import logger
+
 ALLOWED_METHODS = ["GET", "POST", "PATCH", "DELETE", "PUT", "HEAD"]
 
 akamai_secret = RegistrySecret(
@@ -31,10 +33,11 @@ def akamai_request(
     auth: dict[str, Any] | Any,
     method: str,
     url: str,
-    params: dict[str, Any] | None,
-    data: dict[str, Any] | None,
-    timeout: int | None,
+    params: dict[str, Any]=None,
+    data: dict[str, Any]=None,
+    timeout: int=None,
 ) -> dict[str, Any]:
+    logger.info("akamai_akamai_request started")
     params = params or {}
     timeout = timeout or 60
 
@@ -51,6 +54,7 @@ def akamai_request(
         data=data,
         timeout=timeout
     )
+    logger.info("akamai_akamai_request finished")
 
     return response.json()
 
@@ -192,6 +196,7 @@ def list_network_lists(
         Field(..., description="When enabled, provides additional response data identifying who created and updated the list and when, and the network list's deployment status in both STAGING and PRODUCTION environments. This data takes longer to provide.")
     ]
 ):
+    logger.info("akamai.list_network_lists started")
     params = {}
     if include_elements:
         params.update({"includeElements": include_elements})
