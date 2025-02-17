@@ -201,6 +201,8 @@ def list_network_lists(
         params.update({"listType": list_type})
     if extended:
         params.update({"extended": extended})
+    
+    url = urljoin(secrets.get("AKAMAI_BASE_URL"), "/network-list/v2/network-lists")
 
     return akamai_request(
         auth=EdgeGridAuth(
@@ -209,6 +211,6 @@ def list_network_lists(
             access_token=secrets.get("AKAMAI_ACCESS_TOKEN")
         ),
         method="GET",
-        endpoint="/network-list/v2/network-lists",
+        url=url,
         params=params
     )
