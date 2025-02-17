@@ -5,6 +5,9 @@ from pydantic import Field
 from tracecat_registry import RegistrySecret, registry, secrets
 import httpx
 from akamai.edgegrid import EdgeGridAuth
+from urllib.parse import urljoin
+
+ALLOWED_METHODS = ["GET", "POST", "PATCH", "DELETE", "PUT", "HEAD"]
 
 akamai_secret = RegistrySecret(
     name="akamai",
@@ -42,22 +45,35 @@ async def call_endpoint(
     params: Annotated[
         dict[str, Any] | None,
         Field(...,description="Parameters to pass with the request")
+    ],
+    data: Annotated[
+        dict[str, Any] | None,
+        Field(...,description="Data to pass with the request")
+    ],
+    timeout: Annotated[
+        int | None,
+        Field(...,description="Timeout for the request. Default is 60 seconds.")
     ]
 ) -> dict[str, Any]:
     params = params or {}
-
+    timeout = timeout or 60
     async with httpx.AsyncClient() as client:
-        
-        client.auth = EdgeGridAuth(
-            client_token = secrets.get("AKAMAI_CLIENT_TOKEN"),
-            client_secret = secrets.get("AKAMAI_CLIENT_SECRET"),
-            access_token = secrets.get("AKAMAI_ACCESS_TOKEN")
+        request = client.request(
+            method = method, 
+            url = urljoin(secrets.get("AKAMAI_BASE_URL",endpoint)),
+            auth = EdgeGridAuth(
+                client_token = secrets.get("AKAMAI_CLIENT_TOKEN"),
+                client_secret = secrets.get("AKAMAI_CLIENT_SECRET"),
+                access_token = secrets.get("AKAMAI_ACCESS_TOKEN")
+                ),
+            headers = {
+                "Content-Type": "application/json",
+                "Accept":  "applicaiton/json"
+            },
+            params=params,
+            data=data,
+            timeout=timeout
         )
-        client.headers = {
-            "Content-Type": "application/json",
-            "Accept":  "applicaiton/json"
-        }
-        request = client.request(method=method)
-        response = await client.send(request=request)
+        response = await client.send(request)
     
     return response.json()
