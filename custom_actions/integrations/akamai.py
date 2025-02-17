@@ -28,7 +28,7 @@ akamai_secret = RegistrySecret(
 
 
 def akamai_request(
-    auth: dict[str, Any] | tuple,
+    auth: dict[str, Any] | Any,
     method: str,
     url: str,
     params: dict[str, Any] | None,
@@ -162,53 +162,53 @@ def call_endpoint(
 #         return response.json()
 
 
-@registry.register(
-    default_title="List network lists",
-    description="List all network lists that are visible for the authenticated user.",
-    display_group="Akamai",
-    doc_url="https://techdocs.akamai.com/developer/docs/python",
-    namespace="tools.akamai",
-    secrets=[akamai_secret],
-)
-def list_network_lists(
-    include_elements: Annotated[
-        bool | None,
-        Field(...,
-              description="If enabled, the response list includes all items. For large network lists, this may slow responses and yield large response objects. The default false value when listing more than one network list omits the network list's elements and only provides higher-level metadata."
-              ),
-    ],
-    search: Annotated[
-        str | None,
-        Field(...,
-              description="Only list items that match the specified substring in any network list's name or list of items."
-              ),
-    ],
-    list_type: Annotated[
-        str: None,
-        Field(..., description="Filters the output to lists of only the given type of network lists if provided, either *IP* or *GEO*. This corresponds to the network list object's type member.")
-    ],
-    extended: Annotated[
-        bool | None,
-        Field(..., description="When enabled, provides additional response data identifying who created and updated the list and when, and the network list's deployment status in both STAGING and PRODUCTION environments. This data takes longer to provide.")
-    ]
-):
-    params = {}
-    if include_elements:
-        params.update({"includeElements": include_elements})
-    if search:
-        params.update({"search": search})
-    if list_type:
-        params.update({"listType": list_type})
-    if extended:
-        params.update({"extended": extended})
+# @registry.register(
+#     default_title="List network lists",
+#     description="List all network lists that are visible for the authenticated user.",
+#     display_group="Akamai",
+#     doc_url="https://techdocs.akamai.com/developer/docs/python",
+#     namespace="tools.akamai",
+#     secrets=[akamai_secret],
+# )
+# def list_network_lists(
+#     include_elements: Annotated[
+#         bool | None,
+#         Field(...,
+#               description="If enabled, the response list includes all items. For large network lists, this may slow responses and yield large response objects. The default false value when listing more than one network list omits the network list's elements and only provides higher-level metadata."
+#               ),
+#     ],
+#     search: Annotated[
+#         str | None,
+#         Field(...,
+#               description="Only list items that match the specified substring in any network list's name or list of items."
+#               ),
+#     ],
+#     list_type: Annotated[
+#         str: None,
+#         Field(..., description="Filters the output to lists of only the given type of network lists if provided, either *IP* or *GEO*. This corresponds to the network list object's type member.")
+#     ],
+#     extended: Annotated[
+#         bool | None,
+#         Field(..., description="When enabled, provides additional response data identifying who created and updated the list and when, and the network list's deployment status in both STAGING and PRODUCTION environments. This data takes longer to provide.")
+#     ]
+# ):
+#     params = {}
+#     if include_elements:
+#         params.update({"includeElements": include_elements})
+#     if search:
+#         params.update({"search": search})
+#     if list_type:
+#         params.update({"listType": list_type})
+#     if extended:
+#         params.update({"extended": extended})
 
-    return akamai_request(
-        auth=EdgeGridAuth(
-            client_token=secrets.get("AKAMAI_CLIENT_TOKEN"),
-            client_secret=secrets.get("AKAMAI_CLIENT_SECRET"),
-            access_token=secrets.get("AKAMAI_ACCESS_TOKEN")
-        ),
-        method="GET",
-        endpoint="/network-list/v2/network-lists",
-        params=params
-    )
+#     return akamai_request(
+#         auth=EdgeGridAuth(
+#             client_token=secrets.get("AKAMAI_CLIENT_TOKEN"),
+#             client_secret=secrets.get("AKAMAI_CLIENT_SECRET"),
+#             access_token=secrets.get("AKAMAI_ACCESS_TOKEN")
+#         ),
+#         method="GET",
+#         endpoint="/network-list/v2/network-lists",
+#         params=params
+#     )
