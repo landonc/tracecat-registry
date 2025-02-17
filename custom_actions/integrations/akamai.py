@@ -28,7 +28,7 @@ akamai_secret = RegistrySecret(
 
 
 def akamai_request(
-    auth: dict[str, Any] | tuple | None,
+    auth: dict[str, Any] | tuple,
     method: str,
     url: str,
     params: dict[str, Any] | None,
